@@ -42,6 +42,7 @@ public class AssignmentApplication extends Application {
     private GameObject ally2;
     private GameObject enemy;
     private Pane root;
+    private int score=0;
     private Parent createContent() {
         root = new Pane();
         root.setPrefSize(620, 620);
@@ -61,6 +62,7 @@ public class AssignmentApplication extends Application {
             @Override
             public void handle(long now) {
                 onUpdate();
+                score+=1;
             }
         };
 
@@ -80,6 +82,7 @@ public class AssignmentApplication extends Application {
                     ally.setAlive(false);
                     root.getChildren().removeAll(enemy.getView(), player.getView(),ally.getView());
                     timer.stop();
+                    System.out.println("Score :"+score);
                 }
                 else if(player.isColliding(ally)){
                     double speedx=-player.getVelocity().getX();
@@ -106,6 +109,7 @@ public class AssignmentApplication extends Application {
     Label fsuccess;
     Label lwarning;
     Label lsuccess;
+    String currentuser;
     protected boolean validcheck(String x){
         char [] a=x.toCharArray();
         boolean y=false;
@@ -188,7 +192,7 @@ public class AssignmentApplication extends Application {
     protected boolean loginuserdb(String n,String p) throws Exception{
         boolean flag = true;
         Class.forName("org.sqlite.JDBC");
-        Connection con = DriverManager.getConnection("jdbc:sqlite:G:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
+        Connection con = DriverManager.getConnection("jdbc:sqlite:D:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
         Statement st = con.createStatement();
         Statement st2 = con.createStatement();
         Statement st3 = con.createStatement();
@@ -252,6 +256,22 @@ public class AssignmentApplication extends Application {
            return 3;
         }
     }
+    protected void setUserName(String x){
+        currentuser = x;
+    }
+    protected void setData(){
+        try{
+         Class.forName("org.sqlite.JDBC");
+         Connection con = DriverManager.getConnection("jdbc:sqlite:D:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
+         Statement set = con.createStatement();
+         set.executeUpdate("UPDATE playerinfo SET allyposx='"+ally.getView().getTranslateX()+"',allyposy='"+ally.getView().getTranslateY()+"', playerposx='"+player.getView().getTranslateX()+"', playerposy='"+player.getView().getTranslateY()+"', playervx='"+player.getVelocity().getX()+"', playervy='"+player.getVelocity().getY()+"', playerax='"+player.accy+"', playeray='"+ player.accy+"' WHERE Name ='"+currentuser+"'");
+         set.close();
+         con.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -287,6 +307,7 @@ public class AssignmentApplication extends Application {
             if(loginuserdb(namef.getText(),passf.getText())){
                 lwarning.setVisible(false);
                 lsuccess.setVisible(false);
+                setUserName(namef.getText());
                 namef.clear();
                 passf.clear();
                 primaryStage.setScene(mainpage);
@@ -464,7 +485,13 @@ public class AssignmentApplication extends Application {
             primaryStage.setScene(gscene);
             timer.start();
         });
-        pbox.getChildren().addAll(rbutton);
+        Button sande = new Button("save and exit");
+        sande.setOnAction(e->{
+            setData();
+            timer.stop();
+            primaryStage.setScene(mainpage);
+        });
+        pbox.getChildren().addAll(rbutton,sande);
         Scene pscene = new Scene(pbox,300,300);
         gscene.setOnKeyPressed(mscene->{
                 if(mscene.getCode()==KeyCode.LEFT){

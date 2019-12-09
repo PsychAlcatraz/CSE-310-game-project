@@ -63,7 +63,6 @@ public class AssignmentApplication extends Application {
                 onUpdate();
             }
         };
-        timer.start();
 
         return root;
     }
@@ -130,7 +129,7 @@ public class AssignmentApplication extends Application {
         System.out.println(n+" "+p);
         boolean flag = true;
         Class.forName("org.sqlite.JDBC");
-        Connection con = DriverManager.getConnection("jdbc:sqlite:F:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
+        Connection con = DriverManager.getConnection("jdbc:sqlite:G:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
         Statement st = con.createStatement();
         Statement st2 = con.createStatement();
         Statement st3 = con.createStatement();
@@ -159,7 +158,7 @@ public class AssignmentApplication extends Application {
         System.out.println(n+" "+p);
         boolean flag = true;
         Class.forName("org.sqlite.JDBC");
-        Connection con = DriverManager.getConnection("jdbc:sqlite:F:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
+        Connection con = DriverManager.getConnection("jdbc:sqlite:G:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
         Statement st = con.createStatement();
         Statement st2 = con.createStatement();
         Statement st3 = con.createStatement();
@@ -189,7 +188,7 @@ public class AssignmentApplication extends Application {
     protected boolean loginuserdb(String n,String p) throws Exception{
         boolean flag = true;
         Class.forName("org.sqlite.JDBC");
-        Connection con = DriverManager.getConnection("jdbc:sqlite:D:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
+        Connection con = DriverManager.getConnection("jdbc:sqlite:G:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
         Statement st = con.createStatement();
         Statement st2 = con.createStatement();
         Statement st3 = con.createStatement();
@@ -219,7 +218,7 @@ public class AssignmentApplication extends Application {
     protected boolean usernameexists(String x)throws Exception{
         boolean flag = true;
         Class.forName("org.sqlite.JDBC");
-        Connection con = DriverManager.getConnection("jdbc:sqlite:F:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
+        Connection con = DriverManager.getConnection("jdbc:sqlite:G:\\Fall 2019\\CSE310 project\\AssignmentApplication\\src\\assignmentapplication\\gamedb.db");
         Statement st = con.createStatement();
         ResultSet rs = st.executeQuery("SELECT Name FROM playerinfo");
         while(rs.next()){
@@ -253,7 +252,6 @@ public class AssignmentApplication extends Application {
            return 3;
         }
     }
-    
 
     @Override
     public void start(Stage primaryStage) {
@@ -273,8 +271,10 @@ public class AssignmentApplication extends Application {
         VBox gpage = new VBox(10);
         Scene mainpage = new Scene(gpage,300,300);
         Button ngame = new Button("New Game");
+        Scene gscene = new Scene(createContent());
         ngame.setOnAction(e->{
-            primaryStage.setScene(new Scene(createContent()));
+            primaryStage.setScene(gscene);
+            timer.start();
         });
         
         Button lback = new Button("Go Back");
@@ -457,13 +457,7 @@ public class AssignmentApplication extends Application {
         left.getChildren().addAll(usern,namef,userp,passf,signin,s2,newuser,signup);
         gpage.getChildren().addAll(ngame,lback);
         primaryStage.setTitle("ProjectAPP");
-        Scene gscene = new Scene(createContent());
-        primaryStage.setScene(gscene);
-        ally.getView().setOnMousePressed(e->{ally.getView().setOnMouseDragged(f->{
-            ally.getView().setTranslateX(f.getSceneX()-20);
-            ally.getView().setTranslateY(f.getSceneY()-10);
-        });
-        }); 
+        primaryStage.setScene(scene);
         VBox pbox = new VBox(10);
         Button rbutton = new Button("Resume");
         rbutton.setOnAction(e->{
@@ -472,7 +466,7 @@ public class AssignmentApplication extends Application {
         });
         pbox.getChildren().addAll(rbutton);
         Scene pscene = new Scene(pbox,300,300);
-        primaryStage.getScene().setOnKeyPressed(mscene->{
+        gscene.setOnKeyPressed(mscene->{
                 if(mscene.getCode()==KeyCode.LEFT){
                     ally.rotateLeft();
                 }
@@ -484,6 +478,11 @@ public class AssignmentApplication extends Application {
                 primaryStage.setScene(pscene);
                 }
             });
+        ally.getView().setOnMousePressed(e->{ally.getView().setOnMouseDragged(f->{
+            ally.getView().setTranslateX(f.getSceneX()-20);
+            ally.getView().setTranslateY(f.getSceneY()-10);
+        });
+        }); 
         primaryStage.setResizable(false);
         primaryStage.show();
     }
